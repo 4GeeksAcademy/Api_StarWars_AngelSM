@@ -38,7 +38,8 @@ class Character(db.Model):
             "name": self.name,
             "skin": self.skin_color,
             "gender": self.gender,
-            "History": self.History
+            "History": self.History,
+            "Height":self.Height
         }
 
 
@@ -103,8 +104,10 @@ class Favorites(db.Model):
     planet_id: Mapped[int] = mapped_column(db.ForeignKey('planets.id'), nullable=True)
     starship_id: Mapped[int] = mapped_column(db.ForeignKey('starships.id'), nullable=True)
     vehicle_id: Mapped[int] = mapped_column(db.ForeignKey('vehicles.id'), nullable=True)
+    Character_id:Mapped[int] = mapped_column(db.ForeignKey('character.id'), nullable=True)
 
     user = relationship("User", back_populates="favorites")
     planet = relationship("Planet", back_populates="favorites")
     starship = relationship("Starship", back_populates="favorites")
     vehicle = relationship("Vehicle", back_populates="favorites")
+    character = relationship("Character", back_populates = "favorites")
