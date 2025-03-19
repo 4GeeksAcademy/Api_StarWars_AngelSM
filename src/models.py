@@ -1,6 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import String, Integer, BigInteger, Float
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 db = SQLAlchemy()
 
@@ -13,6 +13,8 @@ class User(db.Model):
     firstname: Mapped[str] = mapped_column(String(50), nullable=False)
     lastname: Mapped[str] = mapped_column(String(100), nullable=False)
     username: Mapped[str] = mapped_column(String(15), nullable=False)
+
+    favs = relationship("Favorites", back_populates="User")
 
     def serialize(self):
         return {
@@ -93,4 +95,16 @@ class Vehicle(db.Model):
             "capacity": self.cargo_capacity,
             "length": self.length
         }
- 
+
+
+class Favorites(db.Model):
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    user_id: Mapped[int] = mapped_column(db.ForeignKey('users.id'), nullable=False)
+    planet_id: Mapped[int] = mapped_column(db.ForeignKey('planets.id'), nullable=True)
+    starship_id: Mapped[int] = mapped_column(db.ForeignKey('starships.id'), nullable=True)
+    vehicle_id: Mapped[int] = mapped_column(db.ForeignKey('vehicles.id'), nullable=True)
+
+    user = relationship("User", back_populates="favorites")
+    planet = relationship("Planet", back_populates="favorites")
+    starship = relationship("Starship", back_populates="favorites")
+    vehicle = relationship("Vehicle", back_populates="favorites")
