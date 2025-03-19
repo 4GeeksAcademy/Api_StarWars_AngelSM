@@ -62,7 +62,7 @@ def get_all_character():
 @app.route('/characters/<int:character_id>', methods=['GET'])
 def get_character(character_id):
 
-    character = Character.query.all(character_id)
+    character = Character.query.get(character_id)
 
     if not character:
         return jsonify({
@@ -71,8 +71,9 @@ def get_character(character_id):
 
     return jsonify({
         "msg": "Character exist",
-        "character": character.id()
+        "character": character.serialize()
     })
+
 
 @app.route('/planets', methods=['GET'])
 def get_all_planets():
@@ -87,14 +88,14 @@ def get_all_planets():
 
     return jsonify({
         "msg": "Succefully showed",
-        "character": planets_serialized
+        "planets": planets_serialized
     }), 200
 
 
 @app.route('/planets/<int:planet_id>', methods=['GET'])
 def get_planet(planet_id):
 
-    planet = Planet.query.all(planet_id)
+    planet = Planet.query.get(planet_id)
 
     if not planet:
         return jsonify({
@@ -103,8 +104,9 @@ def get_planet(planet_id):
 
     return jsonify({
         "msg": "Planet exist",
-        "character": planet.id()
+        "planet": planet.serialize()
     })
+
 
 @app.route('/starships', methods=['GET'])
 def get_all_starship():
@@ -119,14 +121,14 @@ def get_all_starship():
 
     return jsonify({
         "msg": "Succefully showed",
-        "character": starship_serialized
+        "starhips": starship_serialized
     }), 200
 
 
 @app.route('/starships/<int:starships_id>', methods=['GET'])
 def get_starship(starship_id):
 
-    starship = Starship.query.all(starship_id)
+    starship = Starship.query.get(starship_id)
 
     if not starship:
         return jsonify({
@@ -135,8 +137,9 @@ def get_starship(starship_id):
 
     return jsonify({
         "msg": "starship exist",
-        "character": starship.id()
+        "starship": starship.serialize()
     })
+
 
 @app.route('/vehicles', methods=['GET'])
 def get_all_vehicle():
@@ -151,14 +154,14 @@ def get_all_vehicle():
 
     return jsonify({
         "msg": "Succefully showed",
-        "character": vehicle_serialized
+        "vehicles": vehicle_serialized
     }), 200
 
 
 @app.route('/vehicles/<int:vehicle_id>', methods=['GET'])
 def get_vehicle(vehicle_id):
 
-    vehicle = Vehicle.query.all(vehicle_id)
+    vehicle = Vehicle.query.get(vehicle_id)
 
     if not vehicle:
         return jsonify({
@@ -167,8 +170,9 @@ def get_vehicle(vehicle_id):
 
     return jsonify({
         "msg": "vehicle exist",
-        "character": vehicle.id()
+        "vehicle": vehicle.serialize()
     })
+
 
 @app.route('/users', methods=['GET'])
 def get_all_user():
@@ -180,9 +184,31 @@ def get_all_user():
         "users": user_serialized}), 200
 
 
+@app.route('/users', methods=['POST'])
+def new_user():
+    request_data = request.get_json()
 
-@app.route('/users/<int:user_id>/favorites', methods = ['GET'])
-def get_user_favorites (user_id):
+    if not request_data.get("email") or not request_data.get("username"):
+        return {
+            "msg": "Missing requiered fields"
+        }, 400
+
+    NewUser = User(
+        email=request_data.get("email"),
+        id=request_data.get("id"),
+        username=request_data.get("username")
+    )
+
+    db.session.add(NewUser)
+    db.session.commit()
+
+    return jsonify({
+        "msg": "User created"
+    }), 201
+
+
+@app.route('/users/<int:user_id>/favorites', methods=['GET'])
+def get_user_favorites(user_id):
 
     user = User.query.get(user_id)
 
@@ -190,13 +216,6 @@ def get_user_favorites (user_id):
         return jsonify({
             "msg": "User doesnt exist"
         }), 404
-
-
-
-
-
-
-
 
 
 # this only runs if `$ python src/app.py` is executed
