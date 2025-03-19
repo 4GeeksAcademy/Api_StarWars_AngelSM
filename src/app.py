@@ -179,6 +179,8 @@ def get_all_user():
         "msg": "Users retrieved successfully",
         "users": user_serialized}), 200
 
+
+
 @app.route('/users/<int:user_id>/favorites', methods = ['GET'])
 def get_user_favorites (user_id):
 

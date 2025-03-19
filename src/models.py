@@ -111,3 +111,13 @@ class Favorites(db.Model):
     starship = relationship("Starship", back_populates="favorites")
     vehicle = relationship("Vehicle", back_populates="favorites")
     character = relationship("Character", back_populates = "favorites")
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "user": self.user_id,
+            "planet": self.planet_id,
+            "starship": self.starship_id,
+            "vehicle": self.length,
+            "character": self.Character_id
+        }
