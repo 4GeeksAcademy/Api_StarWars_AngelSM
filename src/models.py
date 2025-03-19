@@ -10,11 +10,11 @@ class User(db.Model):
     email: Mapped[str] = mapped_column(
         String(120), unique=True, nullable=False)
     password: Mapped[str] = mapped_column(nullable=False)
-    firstname: Mapped[str] = mapped_column(String(50), nullable=False)
-    lastname: Mapped[str] = mapped_column(String(100), nullable=False)
+    firstname: Mapped[str] = mapped_column(String(50), nullable=True)
+    lastname: Mapped[str] = mapped_column(String(100), nullable=True)
     username: Mapped[str] = mapped_column(String(15), nullable=False)
 
-    favs = relationship("Favorites", back_populates="User")
+    favorites = relationship("Favorites", back_populates="user")
 
     def serialize(self):
         return {
@@ -32,6 +32,9 @@ class Character(db.Model):
     History: Mapped[str] = mapped_column(String(500), nullable=False)
     Height: Mapped[float] = mapped_column(nullable=False)
 
+    
+    favorites = relationship("Favorites", back_populates="character")
+
     def serialize(self):
         return {
             "id": self.id,
@@ -39,7 +42,7 @@ class Character(db.Model):
             "skin": self.skin_color,
             "gender": self.gender,
             "History": self.History,
-            "Height":self.Height
+            "Height": self.Height
         }
 
 
@@ -51,6 +54,9 @@ class Planet(db.Model):
     diameter: Mapped[int] = mapped_column(nullable=False)
     climate: Mapped[str] = mapped_column(String(255), nullable=False)
     population: Mapped[int] = mapped_column(BigInteger, nullable=False)
+
+    
+    favorites = relationship("Favorites", back_populates="planet")
 
     def serialize(self):
         return {
@@ -71,6 +77,9 @@ class Starship(db.Model):
     cargo_capacity: Mapped[int] = mapped_column(BigInteger, nullable=False)
     length: Mapped[float] = mapped_column(Float(10, 2), nullable=False)
 
+    
+    favorites = relationship("Favorites", back_populates="starship")
+
     def serialize(self):
         return {
             "id": self.id,
@@ -88,6 +97,9 @@ class Vehicle(db.Model):
     cargo_capacity: Mapped[int] = mapped_column(BigInteger, nullable=False)
     length: Mapped[float] = mapped_column(Float(10, 2), nullable=False)
 
+
+    favorites = relationship("Favorites", back_populates="vehicle")
+
     def serialize(self):
         return {
             "id": self.id,
@@ -100,17 +112,18 @@ class Vehicle(db.Model):
 
 class Favorites(db.Model):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    user_id: Mapped[int] = mapped_column(db.ForeignKey('users.id'), nullable=False)
-    planet_id: Mapped[int] = mapped_column(db.ForeignKey('planets.id'), nullable=True)
-    starship_id: Mapped[int] = mapped_column(db.ForeignKey('starships.id'), nullable=True)
-    vehicle_id: Mapped[int] = mapped_column(db.ForeignKey('vehicles.id'), nullable=True)
-    Character_id:Mapped[int] = mapped_column(db.ForeignKey('character.id'), nullable=True)
+    user_id: Mapped[int] = mapped_column(db.ForeignKey('user.id'), nullable=False)
+    planet_id: Mapped[int] = mapped_column(db.ForeignKey('planet.id'), nullable=True)
+    starship_id: Mapped[int] = mapped_column(db.ForeignKey('starship.id'), nullable=True)
+    vehicle_id: Mapped[int] = mapped_column(db.ForeignKey('vehicle.id'), nullable=True)
+    character_id: Mapped[int] = mapped_column(db.ForeignKey('character.id'), nullable=True)
 
+   
     user = relationship("User", back_populates="favorites")
     planet = relationship("Planet", back_populates="favorites")
     starship = relationship("Starship", back_populates="favorites")
     vehicle = relationship("Vehicle", back_populates="favorites")
-    character = relationship("Character", back_populates = "favorites")
+    character = relationship("Character", back_populates="favorites")
 
     def serialize(self):
         return {
@@ -118,6 +131,6 @@ class Favorites(db.Model):
             "user": self.user_id,
             "planet": self.planet_id,
             "starship": self.starship_id,
-            "vehicle": self.length,
-            "character": self.Character_id
+            "vehicle": self.vehicle_id,
+            "character": self.character_id
         }
