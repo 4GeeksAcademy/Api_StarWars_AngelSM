@@ -92,7 +92,7 @@ def get_all_planets():
 
 
 @app.route('/planets/<int:planet_id>', methods=['GET'])
-def get_character(planet_id):
+def get_planet(planet_id):
 
     planet = Planet.query.all(planet_id)
 
@@ -179,7 +179,15 @@ def get_all_user():
         "msg": "Users retrieved successfully",
         "users": user_serialized}), 200
 
+@app.route('/users/<int:user_id>/favorites', methods = ['GET'])
+def get_user_favorites (user_id):
 
+    user = User.query.get(user_id)
+
+    if not user:
+        return jsonify({
+            "msg": "User doesnt exist"
+        }), 404
 
 
 
