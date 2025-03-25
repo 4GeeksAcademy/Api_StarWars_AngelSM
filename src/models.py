@@ -6,6 +6,8 @@ db = SQLAlchemy()
 
 
 class User(db.Model):
+
+    __tablename__= 'user'
     id: Mapped[int] = mapped_column(primary_key=True)
     email: Mapped[str] = mapped_column(
         String(120), unique=True, nullable=False)
@@ -25,6 +27,8 @@ class User(db.Model):
 
 
 class Character(db.Model):
+
+    __tablename__ = 'character'
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(50), nullable=False)
     skin_color: Mapped[str] = mapped_column(String(50), nullable=False)
@@ -47,6 +51,8 @@ class Character(db.Model):
 
 
 class Planet(db.Model):
+
+    __tablename__= 'planet'
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(50), nullable=False)
     History: Mapped[str] = mapped_column(String(500), nullable=False)
@@ -71,6 +77,8 @@ class Planet(db.Model):
 
 
 class Starship(db.Model):
+
+    __tablename__ = 'starship' 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(String(255), nullable=False)
     model: Mapped[str] = mapped_column(String(255), nullable=False)
@@ -91,6 +99,8 @@ class Starship(db.Model):
 
 
 class Vehicle(db.Model):
+
+    __tablename__ = 'vehicle'
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(String(255), nullable=False)
     model: Mapped[str] = mapped_column(String(255), nullable=False)
@@ -111,6 +121,7 @@ class Vehicle(db.Model):
 
 
 class Favorites(db.Model):
+    __tablename__ = 'favorites'
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     user_id: Mapped[int] = mapped_column(db.ForeignKey('user.id'), nullable=False)
     planet_id: Mapped[int] = mapped_column(db.ForeignKey('planet.id'), nullable=True)

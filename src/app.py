@@ -46,13 +46,15 @@ def sitemap():
 def get_all_character():
 
     characters = Character.query.all()
-    characters_serialized = [character.serialize() for character in characters]
+    
 
     if not characters:
         return jsonify({
             "msg": "Characters not exist yet"
         }), 404
-
+    
+    characters_serialized = [character.serialize() for character in characters]
+    
     return jsonify({
         "msg": "Succefully showed",
         "character": characters_serialized
@@ -66,7 +68,7 @@ def get_character(character_id):
 
     if not character:
         return jsonify({
-            "msg": "Character dont found"
+            "msg": "Character not found"
         }), 404
 
     return jsonify({
@@ -79,13 +81,14 @@ def get_character(character_id):
 def get_all_planets():
 
     planets = Planet.query.all()
-    planets_serialized = [planet.serialize() for planet in planets]
-
+    
     if not planets:
         return jsonify({
             "msg": "planets not exist yet"
         }), 404
-
+    
+    planets_serialized = [planet.serialize() for planet in planets]
+    
     return jsonify({
         "msg": "Succefully showed",
         "planets": planets_serialized
@@ -108,20 +111,22 @@ def get_planet(planet_id):
     })
 
 
+
 @app.route('/starships', methods=['GET'])
 def get_all_starship():
 
     starships = Starship.query.all()
-    starship_serialized = [starship.serialize() for starship in starships]
-
+    
     if not starships:
         return jsonify({
             "msg": "starships not exist yet"
         }), 404
 
+    starship_serialized = [starship.serialize() for starship in starships]
+
     return jsonify({
         "msg": "Succefully showed",
-        "starhips": starship_serialized
+        "starships": starship_serialized
     }), 200
 
 
@@ -145,12 +150,14 @@ def get_starship(starship_id):
 def get_all_vehicle():
 
     vehicles = Vehicle.query.all()
-    vehicle_serialized = [vehicle.serialize() for vehicle in vehicles]
+    
 
     if not vehicles:
         return jsonify({
             "msg": "vehicles not exist yet"
         }), 404
+    
+    vehicle_serialized = [vehicle.serialize() for vehicle in vehicles]
 
     return jsonify({
         "msg": "Succefully showed",
@@ -209,13 +216,117 @@ def new_user():
 
 @app.route('/users/<int:user_id>/favorites', methods=['GET'])
 def get_user_favorites(user_id):
-
     user = User.query.get(user_id)
 
     if not user:
         return jsonify({
-            "msg": "User doesnt exist"
+           "msg": "User doesnt exist"
         }), 404
+    favorites= user.favorites
+    favorites_list = [fav.serialize() for fav in favorites]
+    return jsonify({
+        "msg": "this is ur favorites",
+        "favorites": favorites_list
+    }), 200
+
+@app.route('/favorite/planets/<int:planet_id>', methods = ['POST'])
+def add_favorites_planets(planet_id):
+    user_id = 1
+    user = User.query.get(user_id)
+    planet = Planet.query.get(planet_id)
+
+    if not user or not planet:
+        return jsonify({"msg":"User or planet not found"}), 404
+    
+    new_favorite_planet = Favorites(user_id=user.id, planet_id=planet.id)
+    db.session.add(new_favorite_planet)
+    db.session.commit()
+
+    return jsonify({"msg": "Planet added to favorites"}), 201
+
+@app.route('/favorite/planets/<int:planet_id>', methods=['DELETE'])
+def delete_favorite_planet(planet_id):
+    user_id = 1
+    favorite = Favorites.query.filter_by(user_id=user_id, planet_id=planet_id).first()
+
+    if not favorite:
+        return jsonify({"msg": "Favorite planet not found"}), 404
+
+    db.session.delete(favorite)
+    db.session.commit()
+
+    return jsonify({"msg": "Planet removed"}), 200
+
+@app.route('/favorite/characters/<int:character_id>', methods = ['POST'])
+def add_favorite_character (character_id):
+    user_id = 1
+    user = User.query.get(user_id)
+    character = Character.query.get(character_id)
+
+    if not user or not character:
+        return jsonify({"msg":"User or character not found"}),404
+    
+    new_favorite_character = Favorites(user_id = user.id, character_id = character.id)
+    db.session.add(new_favorite_character)
+    db.session.commit()
+
+    return jsonify({
+        "msg":"Character added to favorite"
+    }), 200
+@app.route('/favorite/characters/<int:character_id>', methods = ['DELETE'])
+def delete_favorite_character (character_id):
+    user_id = 1
+    favorite = Favorites.query.filter_by(user_id=user_id, character_id=character_id).first()
+    db.session.delete(favorite)
+    db.session.commit()
+
+    return jsonify({
+        "msg": "Cahracter removed"
+    }), 200
+@app.route('/favorite/starship/<int:starship_id>', methods = ['POST'])
+def add_favorite_starship (starship_id):
+    user_id = 1
+    user = User.query.get(user_id)
+    starship = Starship.query.get(starship_id)
+
+    if not user or not starship:
+        return jsonify({"msg":"User or starship not found"}),404
+    
+    new_favorite_starship = Favorites(user_id = user.id, starship_id = starship.id)
+    db.session.add(new_favorite_starship)
+    db.session.commit()
+
+    return jsonify({
+        "msg":"Starship added to favorite"
+    }), 200
+@app.route('/favorite/starship/<int:starship_id>', methods = ['DELETE'])
+def delete_favorite_starship (starship_id):
+    user_id = 1
+    favorite = Favorites.query.filter_by(user_id = user_id, starship_id = starship_id).first()
+    db.session.delete(favorite)
+    db.session.commit ()
+
+@app.route('/favorite/vehicles/<int:vehicle_id>', methods = ['POST'])
+def add_fav_vehicle(vehicle_id):
+    user_id = 1 
+    user = User.query.get(user_id)
+    vehicle= Vehicle.query.get(vehicle_id)
+
+    if not user or not vehicle:
+        return jsonify({"msg":"User or vehicle not found"}),404
+    
+    new_favorite_vehicle = Favorites(user_id= user.id, vehicle_id= vehicle.id)
+    db.session.add(new_favorite_vehicle)
+    db.session.commit()
+
+    return jsonify({'msg':'Vehicle added to favorite'}), 200
+@app.route('/favorite/vehicles/<int:vehicle_id>', methods = ['DELETE'])
+def delete_fav_vehicle(vehicle_id):
+    user_id=1
+    favorite = Favorites.query.filter_by(user_id = user_id, vehicle_id = vehicle_id).first()
+    db.session.delete(favorite)
+    db.session.commit()
+    
 
 
 # this only runs if `$ python src/app.py` is executed
