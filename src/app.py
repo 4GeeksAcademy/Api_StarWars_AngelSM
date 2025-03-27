@@ -214,7 +214,7 @@ def new_user():
     }), 201
 
 
-@app.route('/users/<int:user_id>/favorites', methods=['GET'])
+@app.route('/users/favorites/<int:user_id>', methods=['GET'])
 def get_user_favorites(user_id):
     user = User.query.get(user_id)
 
