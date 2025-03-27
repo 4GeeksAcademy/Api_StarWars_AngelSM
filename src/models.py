@@ -33,8 +33,8 @@ class Character(db.Model):
     name: Mapped[str] = mapped_column(String(50), nullable=False)
     skin_color: Mapped[str] = mapped_column(String(50), nullable=False)
     gender: Mapped[str] = mapped_column(String(50), nullable=False)
-    History: Mapped[str] = mapped_column(String(500), nullable=False)
-    Height: Mapped[float] = mapped_column(nullable=False)
+    history: Mapped[str] = mapped_column(String(500), nullable=False)
+    character_height: Mapped[float] = mapped_column(nullable=False)
 
     
     favorites = relationship("Favorites", back_populates="character")
@@ -45,8 +45,8 @@ class Character(db.Model):
             "name": self.name,
             "skin": self.skin_color,
             "gender": self.gender,
-            "History": self.History,
-            "Height": self.Height
+            "History": self.history,
+            "Height": self.character_heighteight
         }
 
 
@@ -83,7 +83,7 @@ class Starship(db.Model):
     name: Mapped[str] = mapped_column(String(255), nullable=False)
     model: Mapped[str] = mapped_column(String(255), nullable=False)
     cargo_capacity: Mapped[int] = mapped_column(BigInteger, nullable=False)
-    length: Mapped[float] = mapped_column(Float(10, 2), nullable=False)
+    starship_length: Mapped[float] = mapped_column(Float(10, 2), nullable=False)
 
     
     favorites = relationship("Favorites", back_populates="starship")
@@ -94,7 +94,7 @@ class Starship(db.Model):
             "name": self.name,
             "model": self.model,
             "capacity": self.cargo_capacity,
-            "length": self.length
+            "length": self.starship_length
         }
 
 
@@ -105,7 +105,7 @@ class Vehicle(db.Model):
     name: Mapped[str] = mapped_column(String(255), nullable=False)
     model: Mapped[str] = mapped_column(String(255), nullable=False)
     cargo_capacity: Mapped[int] = mapped_column(BigInteger, nullable=False)
-    length: Mapped[float] = mapped_column(Float(10, 2), nullable=False)
+    vehicle_length: Mapped[float] = mapped_column(Float(10, 2), nullable=False)
 
 
     favorites = relationship("Favorites", back_populates="vehicle")
@@ -116,7 +116,7 @@ class Vehicle(db.Model):
             "name": self.name,
             "model": self.model,
             "capacity": self.cargo_capacity,
-            "length": self.length
+            "length": self.vechicle_length
         }
 
 
